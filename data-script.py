@@ -31,7 +31,7 @@ def youtube_to_wav(video_url, output_path="data/dataset/temp_data/temp.wav"):
         print(f"Audio successfully saved as {output_path}")
 
         # Cleanup downloaded audio
-        os.remove(downloaded_audio.webm)
+        os.remove("downloaded_audio.webm")
 
     except Exception as e:
         print(f"An error occurred: {e}")
