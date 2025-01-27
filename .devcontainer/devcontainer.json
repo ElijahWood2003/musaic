@@ -1,0 +1,15 @@
+{
+    "name": "Python Dev Container",
+    "image": "mcr.microsoft.com/devcontainers/python:latest",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "ms-python.python",
+          "ms-toolsai.jupyter",
+          "ms-azuretools.vscode-docker"
+        ]
+      }
+    },
+    "postCreateCommand": "pip install torch"
+  }
+  
