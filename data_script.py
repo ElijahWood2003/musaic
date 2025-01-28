@@ -61,6 +61,34 @@ def process_data():
     ud_df.to_csv(ud_dir, index=False, header=True)
     md_df.to_csv(md_dir, index=False, header=True)
 
+
+# Helper function for youtube_to_wav
+# downloads the video -> tries webm, but has mp4 as fallback
+def download_video(url, output_path="."):
+    try:
+        yt = YouTube(url)
+
+        # Check for .webm streams
+        webm_stream = yt.streams.filter(file_extension="webm", progressive=True).first()
+        if webm_stream:
+            print("Downloading .webm stream...")
+            webm_stream.download(output_path)
+            print("Download complete: .webm format")
+        else:
+            print("No .webm stream found. Falling back to .mp4...")
+            # Fallback to .mp4
+            mp4_stream = yt.streams.filter(file_extension="mp4", progressive=True).first()
+            if mp4_stream:
+                mp4_stream.download(output_path)
+                print("Download complete: .mp4 format")
+            else:
+                print("No suitable .mp4 stream found either.")
+    except VideoUnavailable:
+        print("Video is unavailable. Skipping...")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 # takes a youtube url and creates a .wav audio file in a temp directory
 def youtube_to_wav(video_url, output_path="data/temp_data/temp.wav"):
     try:
@@ -128,7 +156,7 @@ def wav_to_spectrogram(file_name):
 
     # Convert to decibels (log scale)
     log_mel_spectrogram = torchaudio.transforms.AmplitudeToDB()(mel_spectrogram)
-    spectrogram = log_mel_spectrogram[0] # (num of mel bins, num of channels)
+    spectrogram = log_mel_spectrogram[0]        # (num of mel bins, num of channels)
 
     # Creating name for new spectrogram
     df = pd.read_csv("data/dataset/music-data.csv")
