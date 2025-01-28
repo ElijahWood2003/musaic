@@ -83,10 +83,38 @@ def download_video(url, output_path="."):
                 print("Download complete: .mp4 format")
             else:
                 print("No suitable .mp4 stream found either.")
-    except VideoUnavailable:
-        print("Video is unavailable. Skipping...")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+# convert either .webm or .mp4 file to .wav
+def convert_to_wav(input_file, output_dir="data/temp_data"):
+    # Ensure the file exists
+    if not os.path.exists(input_file):
+        print(f"File not found: {input_file}")
+        return
+
+    # Get the file name without extension
+    base_name = "temp"
+    output_file = os.path.join(output_dir, f"{base_name}.wav")
+
+    # Use FFmpeg to convert
+    try:
+        subprocess.run([
+            "ffmpeg", 
+            "-i", input_file, 
+            "-vn",  # Exclude video (audio only)
+            "-acodec", "pcm_s16le",  # WAV codec
+            "-ar", "44100",  # Audio sample rate
+            "-ac", "2",  # Number of audio channels
+            output_file
+        ], check=True)
+        print(f"Conversion successful: {output_file}")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred during conversion: {e}")
+
+
+# testing the above functions
+
 
 
 # takes a youtube url and creates a .wav audio file in a temp directory
@@ -117,6 +145,7 @@ def youtube_to_wav(video_url, output_path="data/temp_data/temp.wav"):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+youtube_to_wav("https://www.youtube.com/watch?v=QoEH4umX2y8")
 
 # Load temp audio -> saves it to spectrograms data and returns path directory to spectrogram
 def wav_to_spectrogram(file_name):
