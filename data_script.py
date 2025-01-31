@@ -158,7 +158,7 @@ def wav_to_spectrogram(file_name, index):
     print(f"Spectrogram saved as an image at {output_path}")
 
     # Cleanup temp_data audio
-    os.remove("data/temp_data/temp.wav")
+    os.remove(audio_path)
     
     # return output path to store in csv
     return output_str
