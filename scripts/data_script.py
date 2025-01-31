@@ -11,12 +11,18 @@ import subprocess
 import pandas as pd
 import time
 
+# all necessary file directories
+unprocessed_data_dir = "data/unprocessed-data.csv"      # path to unprocessed-data.csv
+music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
+temp_wav_dir = "data/temp_data/temp.wav"                # path for temp wav file
+spectrogram_dir = "data/dataset/spectrograms"           # path for spectrograms
+
 # combines all scripts below to take unprocessed-data.csv -> music-data.csv with paths to spectrograms and ksig
-# empties unprocessed-data.csv; skips any URLs that fail
+# empties unprocessed-data.csv; skips and marks any URLs that fail
 def process_data():
     # locations in directory
-    ud_dir = "data/unprocessed-data.csv"
-    md_dir = "data/dataset/music-data.csv"
+    ud_dir = unprocessed_data_dir
+    md_dir = music_data_dir
     
     # get unprocessed data df
     ud_df = pd.read_csv(ud_dir)
@@ -67,7 +73,7 @@ def process_data():
     md_df.to_csv(md_dir, index=False, header=True)
 
 # takes a youtube url and creates a .wav audio file in a temp directory
-def youtube_to_wav(video_url, output_path="data/temp_data/temp.wav"):
+def youtube_to_wav(video_url, output_path=temp_wav_dir):
     try:
         # Download the audio using yt-dlp (output as .m4a or .webm)
         ydl_opts = {
@@ -100,7 +106,7 @@ def youtube_to_wav(video_url, output_path="data/temp_data/temp.wav"):
 # index = index value to name spg in directory
 def wav_to_spectrogram(file_name, index):
     # audio path for temp wav file
-    audio_path = r"data/temp_data/temp.wav"
+    audio_path = temp_wav_dir
 
     # checking the path exists; fails if it doesn't
     if(os.path.exists(audio_path) == False):
@@ -138,10 +144,10 @@ def wav_to_spectrogram(file_name, index):
     spectrogram = log_mel_spectrogram[0] # (num of mel bins, num of channels)
 
     # Creating name for new spectrogram
-    df = pd.read_csv("data/dataset/music-data.csv")
+    df = pd.read_csv(music_data_dir)
     
     # Define the output path
-    output_dir = "data/dataset/spectrograms"
+    output_dir = spectrogram_dir
     output_name = f"sp_{index}.png"
     os.makedirs(output_dir, exist_ok=True)
     output_str = f"{output_dir}/{output_name}"      # need this string to return
