@@ -9,7 +9,6 @@ import sys
 import yt_dlp
 import subprocess
 import pandas as pd
-import time
 
 # all necessary file directories
 unprocessed_data_dir = "data/unprocessed-data.csv"      # path to unprocessed-data.csv
