@@ -9,6 +9,7 @@ import sys
 import yt_dlp
 import subprocess
 import pandas as pd
+import time
 
 # combines all scripts below to take unprocessed-data.csv -> music-data.csv with paths to spectrograms and ksig
 # empties unprocessed-data.csv; skips any URLs that fail
@@ -21,7 +22,8 @@ def process_data():
     ud_df = pd.read_csv(ud_dir)
     md_df = pd.read_csv(md_dir)
     processed_rows = []    # indexes of processed rows in the csv file to drop later
-    index = 0   # using this to track row indices
+    index = 0              # tracking indices of unprocessed-data to know which we processed
+    abs_index = len(md_df)     # tracking absolute index of music-data for naming spectrograms
     
     # iterating through rows with itertuples
     for row in ud_df.itertuples():
@@ -33,7 +35,7 @@ def process_data():
         youtube_to_wav(yt_url)
         
         # generating spectrogram from .wav file and holding onto the path
-        spg_path = wav_to_spectrogram(yt_url)
+        spg_path = wav_to_spectrogram(yt_url, abs_index)
         
         # check spg_path exists
         if(spg_path == None or os.path.exists(spg_path) == False):
@@ -45,6 +47,9 @@ def process_data():
         
         processed_rows.append(index)
         index += 1
+        abs_index += 1
+
+        print("")
         
     # dropping rows we have processed
     ud_df = ud_df.drop(index=processed_rows)
@@ -91,16 +96,18 @@ def youtube_to_wav(video_url, output_path="data/temp_data/temp.wav"):
 
 
 # Load temp audio -> saves it to spectrograms data and returns path directory to spectrogram
-def wav_to_spectrogram(file_name):
+# file_name = path to .wav file
+# index = index value to name spg in directory
+def wav_to_spectrogram(file_name, index):
     # audio path for temp wav file
     audio_path = r"data/temp_data/temp.wav"
-    
+
     # checking the path exists; fails if it doesn't
     if(os.path.exists(audio_path) == False):
         return None
-    
+
     # loading waveform and sample rate from audio
-    waveform, sample_rate = torchaudio.load(audio_path)
+    waveform, sample_rate = torchaudio.load(audio_path, format="wav")
 
     # Create the MelSpectrogram transform
     mel_spectrogram_transform = torchaudio.transforms.MelSpectrogram(
@@ -132,7 +139,6 @@ def wav_to_spectrogram(file_name):
 
     # Creating name for new spectrogram
     df = pd.read_csv("data/dataset/music-data.csv")
-    index = len(df)
     
     # Define the output path
     output_dir = "data/dataset/spectrograms"
