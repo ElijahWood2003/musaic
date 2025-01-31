@@ -1,1 +1,5 @@
 spg_path, ksig
+data/dataset/spectrograms/sp_0.png,amajor
+data/dataset/spectrograms/sp_1.png,fminor
+data/dataset/spectrograms/sp_2.png,dmajor
+data/dataset/spectrograms/sp_3.png,dmajor
