@@ -45,7 +45,7 @@ def load_and_split_spectrogram(spectrogram_path, chunk_size=3, sr=48000, hop_len
     return resized_chunks
 
 
-# Load CSV file
+    # Load CSV file and encode key signatures
 music_data = pd.read_csv(music_data_dir)
 spectrogram_paths = music_data['spg_path'].values
 key_signatures = music_data['ksig'].values
@@ -54,7 +54,7 @@ key_signatures = music_data['ksig'].values
 label_encoder = LabelEncoder()
 key_labels = label_encoder.fit_transform(key_signatures)
 
-# Process all spectrograms into chunks
+    # Process all spectrograms into chunks
 X = []  # initial X npy array representing each chunk image
 y = []  # initial Y npy array representing key signatures for each chunk
 for spectrogram_path, key_label in zip(spectrogram_paths, key_labels):
@@ -69,7 +69,7 @@ y = np.array(y)
 # Add a channel dimension for CNN input (additional input since we have grayscale [0, 1] input)
 X = np.expand_dims(X, axis=-1)
 
-# Split dataset into train, validation, and test sets
+    # Split dataset into train, validation, and test sets
 # X_train = training chunks;          X_test = testing chunks
 # y_train = training key signatures;  y_test = testing key signatures
 # X_val = validation chunks;          y_val = validation key signatures
@@ -82,7 +82,7 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 #   Test set: 20% of the original data
 
 
-    # 4. Build, compile and train
+    # Build, compile and train
 input_shape = X_train[0].shape              # input_shape = (128, 128, 1) for CNN model to know shape
 num_classes = len(label_encoder.classes_)   # num_classes determines output estimate
 
@@ -109,9 +109,9 @@ model = models.Sequential([
     layers.Dense(num_classes, activation='softmax')     # a final dense layer based on the number of key signatures; each neuron is mapped to a unique key signature
 ])
 
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer='adam',                             # adam = converges faster than traditional optimizers like Stochastic Gradient Descent
+              loss='sparse_categorical_crossentropy',       # loss = 'cost' we want to minimize
+              metrics=['accuracy'])                         # accuracy = trains based on percentage of predictions matching true labels
 
 history = model.fit(X_train, y_train, epochs=20,
                     validation_data=(X_val, y_val),
