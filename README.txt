@@ -53,3 +53,8 @@ Data Script Output (data_process, data_script):
 7. Save and Deploy the Model:
     Save the trained model for future use.
     Optionally, deploy the model for inference.
+
+
+References:
+https://www.tensorflow.org/api_docs/python/tf/keras/layers
+https://www.tensorflow.org/api_docs/python/tf/keras/Model

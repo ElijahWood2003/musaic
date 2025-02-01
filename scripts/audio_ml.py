@@ -10,7 +10,7 @@ import cv2
 
 # relevant directory paths
 music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
-models_dir = "models/"                                   # path to save model
+models_dir = "models/"                                  # path to save model
 
 # Defining functions for splitting the spectrograms into small chunks for training
 # spectrogram = path to spectrogram png
@@ -18,13 +18,6 @@ models_dir = "models/"                                   # path to save model
 # sr = sample rate of the original audio; default is 48000
 # hop_length = hop length used to create the spectrogram; default is 512
 def split_spectrogram(spectrogram, chunk_size=3, sr=48000, hop_length=512):
-    """
-    Split a spectrogram into smaller chunks.
-    - `chunk_size`: Duration of each chunk in seconds.
-    - `sr`: Sample rate of the original audio.
-    - `hop_length`: Hop length used to create the spectrogram.
-    Returns a list of spectrogram chunks.
-    """
     # Calculate the number of time frames per chunk
     frames_per_chunk = int((chunk_size * sr) / hop_length)
     num_chunks = spectrogram.shape[1] // frames_per_chunk
@@ -92,10 +85,14 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 
 
     # 4. Build, compile and train
-input_shape = X_train[0].shape      # input_shape = (128, 128, 1) for CNN model to know shape
-num_classes = len(label_encoder.classes_)
+input_shape = X_train[0].shape              # input_shape = (128, 128, 1) for CNN model to know shape
+num_classes = len(label_encoder.classes_)   # num_classes determines output estimate
 
+# Creating the ML model
+# Using a sequential model for a linear stack of layers (data flows from one stack to the next linearly)
 model = models.Sequential([
+    # first layer with 32 filters each with size 3x3
+    # 'relu' introduces non-linearity for more the model to learn more complex patterns
     layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
     layers.MaxPooling2D((2, 2)),
     layers.Conv2D(64, (3, 3), activation='relu'),
