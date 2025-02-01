@@ -1,5 +1,6 @@
-spg_path, ksig
-data/dataset/spectrograms/sp_0.png,amajor
-data/dataset/spectrograms/sp_1.png,fminor
-data/dataset/spectrograms/sp_2.png,dmajor
-data/dataset/spectrograms/sp_3.png,dmajor
+spg_image_path, ksig, sample_rate
+data/dataset/spectrograms/sp_0.png,amajor,48000
+data/dataset/spectrograms/sp_1.png,fminor,48000
+data/dataset/spectrograms/sp_2.png,dmajor,48000
+data/dataset/spectrograms/sp_3.png,dmajor,48000
+data/dataset/spectrograms/sp_4.png,cmajor,48000

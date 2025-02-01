@@ -1,4 +1,1 @@
 TO DO:
-audio_ml.load_and_split_spectrogram: THEY ARE NOT BEING SAVED AS .npy -> probably convert to .npy; maybe not image
-
-data_process: update to .npy potentially, also add info for sample rate and other spectrogram specifications to .csv

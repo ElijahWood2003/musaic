@@ -40,7 +40,7 @@ def process_data():
         youtube_to_wav(yt_url)
         
         # generating spectrogram from .wav file and holding onto the path
-        spg_path = wav_to_spectrogram(yt_url, abs_index)
+        spg_path, sample_rate = wav_to_spectrogram(yt_url, abs_index)
         
         # check spg_path exists
         if(spg_path == None or os.path.exists(spg_path) == False):
@@ -48,7 +48,7 @@ def process_data():
             continue
         
         # place information into music-data.csv if successful
-        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}']
+        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}']
         
         processed_rows.append(index)
         index += 1
@@ -166,7 +166,7 @@ def wav_to_spectrogram(file_name, index):
     os.remove(audio_path)
     
     # return output path to store in csv
-    return output_str
+    return output_str, sample_rate
 
 
 # # Plot the Mel spectrogram
