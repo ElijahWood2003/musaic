@@ -45,8 +45,6 @@ def load_and_split_spectrogram(spectrogram_path, chunk_size=3, sr=48000, hop_len
     return resized_chunks
 
 
-
-    # 3. Update the dataset
 # Load CSV file
 music_data = pd.read_csv(music_data_dir)
 spectrogram_paths = music_data['spg_path'].values
@@ -90,19 +88,25 @@ num_classes = len(label_encoder.classes_)   # num_classes determines output esti
 
 # Creating the ML model
 # Using a sequential model for a linear stack of layers (data flows from one stack to the next linearly)
+# Each layer will use 'relu' which allows for non-linearity
 model = models.Sequential([
-    # first layer with 32 filters each with size 3x3
-    # 'relu' introduces non-linearity for more the model to learn more complex patterns
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(128, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dropout(0.5),
-    layers.Dense(num_classes, activation='softmax')
+    # First convolutional layer (128x128x1)
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),  #  32 filters each with size 3x3
+    layers.MaxPooling2D((2, 2)),                        # reduces the spatial dimensions by half
+
+    # Second convolutional layer (64x64x32)
+    layers.Conv2D(64, (3, 3), activation='relu'),       # adds another layer with 64 filters; increasing filters allows model to learn more complex features
+    layers.MaxPooling2D((2, 2)),                        # reduces the spatial dimensions by another half
+
+    # Third convolutional layer (32x32x64)
+    layers.Conv2D(128, (3, 3), activation='relu'),      # adds another layer with 128 filters
+    layers.MaxPooling2D((2, 2)),                        # reduces the spatial dimension by another half; preparing data for fully connected layers
+
+    # Flatten and fully connected layers
+    layers.Flatten(),                                   # flattens the dimensions to prepare for feeding into dense layers
+    layers.Dense(128, activation='relu'),               # adds a fully connected layer with 128 neurons; takes data from convolutional layers to maker predictions
+    layers.Dropout(0.5),                                # randomly sets 50% of the input units to 0 at each update of training, helping with overfitting
+    layers.Dense(num_classes, activation='softmax')     # a final dense layer based on the number of key signatures; each neuron is mapped to a unique key signature
 ])
 
 model.compile(optimizer='adam',
