@@ -10,6 +10,6 @@
         ]
       }
     },
-    "postCreateCommand": "pip install torch"
+    "postCreateCommand": "pip install -r requirements.txt"
   }
   
