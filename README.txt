@@ -23,7 +23,6 @@ Data Script Output (data_process, data_script):
     Steps to Build the Model
 1. Preprocess the Data:
     Load the CSV file containing spectrogram paths and key signatures.
-    Split the dataset into training, validation, and test sets.
     Convert key-signatures into numerical labels
 
 2. Load and Preprocess Spectrograms:
@@ -33,26 +32,24 @@ Data Script Output (data_process, data_script):
 
 3. Build the CNN Model:
     Use TensorFlow/Keras to create a CNN architecture.
-    Include convolutional layers, pooling layers, and fully connected layers.
-    Add dropout or batch normalization for regularization.
+    Includes convolutional layers, pooling layers, and fully connected layers.
+    Adds dropout for regularization.
 
 4. Compile the Model:
-    Choose an optimizer (e.g., Adam).
-    Use a loss function suitable for classification (e.g., sparse_categorical_crossentropy if labels are integers).
-    Add metrics like accuracy.
+    Choose an optimizer -> using adam.
+    Use a loss function suitable for classification -> using sparse_categorical_crossentropy since labels are ints.
+    Add metrics -> currently just accuracy.
 
 5. Train the Model:
     Use the training set to train the model.
     Validate the model on the validation set.
-    Monitor for overfitting and adjust hyperparameters if necessary.
 
 6. Evaluate the Model:
     Test the model on the test set.
-    Analyze performance using metrics like accuracy, confusion matrix, etc.
+    Analyze performance using the predefined metrics (accuracy).
 
 7. Save and Deploy the Model:
     Save the trained model for future use.
-    Optionally, deploy the model for inference.
 
 
 References:
