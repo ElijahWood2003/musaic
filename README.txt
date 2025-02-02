@@ -2,7 +2,7 @@
 Musical Key-Signature Auto-Detector ML Model
 
 Current model is being saved in git LFS.
-The devcontainer currently does not work.
+Open in a Docker devcontainer for dependencies.
 
     Creating the Dataset
 To create a large dataset with minimal manual labor, I have created a script which takes in a list of text in the format:
