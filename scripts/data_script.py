@@ -9,6 +9,8 @@ import sys
 import yt_dlp
 import subprocess
 import pandas as pd
+import cv2
+from PIL import Image
 
 # all necessary file directories
 unprocessed_data_dir = "data/unprocessed-data.csv"      # path to unprocessed-data.csv
@@ -40,15 +42,15 @@ def process_data():
         youtube_to_wav(yt_url)
         
         # generating spectrogram from .wav file and holding onto the path
-        spg_path, sample_rate = wav_to_spectrogram(yt_url, abs_index)
+        spg_path, sample_rate, width, height = wav_to_spectrogram(yt_url, abs_index)
         
         # check spg_path exists
         if(spg_path == None or os.path.exists(spg_path) == False):
             print(f"Failed to generate spectrogram for {yt_url}")
             continue
-        
+
         # place information into music-data.csv if successful
-        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}']
+        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}', f'{width}', f'{height}']
         
         processed_rows.append(index)
         index += 1
@@ -160,13 +162,18 @@ def wav_to_spectrogram(file_name, index):
     plt.savefig(output_path, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close()  # Close the figure to free memory
 
+    # getting height / width in pixels
+    image = Image.open(output_path)
+    width, height = image.size
+    image.close()
+
     print(f"Spectrogram saved as an image at {output_path}")
 
     # Cleanup temp_data audio
     os.remove(audio_path)
     
     # return output path to store in csv
-    return output_str, sample_rate
+    return output_str, sample_rate, width, height
 
 
 # # Plot the Mel spectrogram
