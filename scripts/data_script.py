@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 from pytube import YouTube
 from pydub import AudioSegment
 import os
-import ffmpeg
 import sys
 import yt_dlp
 import subprocess
 import pandas as pd
 import cv2
 from PIL import Image
+# import ffmpeg -> if needed i can use ffmpeg-python in requirements.txt
 
 # all necessary file directories
 unprocessed_data_dir = "data/unprocessed-data.csv"      # path to unprocessed-data.csv

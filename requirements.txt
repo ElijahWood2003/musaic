@@ -1,3 +1,16 @@
+pip
+setuptools
+wheel
 torch
 torchaudio
 matplotlib
+yt_dlp
+pandas
+opencv-python
+tensorflow==2.12.0
+keras
+numpy
+scikit-learn
+Pillow
+pytube
+pydub
