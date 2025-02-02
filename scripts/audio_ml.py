@@ -131,7 +131,7 @@ history = model.fit(X_train, y_train, epochs=20,            # X_train / y_train:
                     batch_size=32)                          # batch size: number of samples tested before a gradient update
 
 
-# 5. Evaluating and saving model
+    # Evaluating and saving model
 test_loss, test_acc = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_acc:.4f}")
 
