@@ -1,6 +1,7 @@
 ---Written by Elijah Wood in 2025---
 Musical Key-Signature Auto-Detector ML Model
 
+Current model is being saved in git LFS.
 
     Creating the Dataset
 To create a large dataset with minimal manual labor, I have created a script which takes in a list of text in the format:
