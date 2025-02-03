@@ -69,6 +69,9 @@ for spectrogram_path, key_label, sample_rate, height in zip(spectrogram_paths, k
     X.extend(chunks)
     y.extend([key_label] * len(chunks)) # placing key signatures FOR EACH chunk
 
+# Process message
+print("Processed spectrograms into chunks.\n")
+
 # Convert to numpy arrays
 X = np.array(X)
 y = np.array(y)
