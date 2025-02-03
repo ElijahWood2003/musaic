@@ -18,7 +18,7 @@ c_size = 3
 # Defining functions for splitting the spectrograms into small chunks for training
 # spectrogram = path to spectrogram png
 # chunk_size = duration of each chunk in seconds; default is 3
-# sr = sample rate of the original audio; default is 48000
+# sr = sample rate of the original audio; default is 48000; all sr's should be equal
 # hop_length = hop length used to create the spectrogram; default is 512
 def split_spectrogram(spectrogram, chunk_size=3, sr=48000, hop_length=512):
     # Calculate the number of time frames per chunk
