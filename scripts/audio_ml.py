@@ -12,8 +12,9 @@ import cv2
 music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
 models_dir = "models/"                                  # path to save model
 
-# chunk size (in seconds); default is 3
-c_size = 3
+# relevant values
+c_size = 3      # chunk size (in seconds)
+b_size = 30     # batch size -> # of samples tested before updating gradient (smaller the number the more processing power but potentially better results)
 
 # Defining functions for splitting the spectrograms into small chunks for training
 # spectrogram = path to spectrogram png
@@ -133,7 +134,7 @@ model.compile(optimizer='adam',                             # adam = converges f
 
 history = model.fit(X_train, y_train, epochs=20,            # X_train / y_train: input -> correct output of training data; epochs = # of times we iterate over entire dataset
                     validation_data=(X_val, y_val),         # validation data: the x and y val data to evaluate loss after each epoch
-                    batch_size=32)                          # batch size: number of samples tested before a gradient update
+                    batch_size=b_size)                      # batch size: number of samples tested before a gradient update
 
 
     # Evaluating and saving model
