@@ -12,6 +12,9 @@ import cv2
 music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
 models_dir = "models/"                                  # path to save model
 
+# chunk size (in seconds); default is 3
+c_size = 3
+
 # Defining functions for splitting the spectrograms into small chunks for training
 # spectrogram = path to spectrogram png
 # chunk_size = duration of each chunk in seconds; default is 3
@@ -64,7 +67,7 @@ frames_per_chunk = 0
 X = []  # initial X npy array representing each chunk image
 y = []  # initial Y npy array representing key signatures for each chunk
 for spectrogram_path, key_label, sample_rate, height in zip(spectrogram_paths, key_labels, sample_rates, heights):
-    chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=sample_rate)  # 3-second chunks
+    chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=c_size, sr=sample_rate)
 
     X.extend(chunks)
     y.extend([key_label] * len(chunks)) # placing key signatures FOR EACH chunk
@@ -119,7 +122,7 @@ model = models.Sequential([
 
     # Flatten and fully connected layers
     layers.Flatten(),                                   # flattens the dimensions to prepare for feeding into dense layers
-    layers.Dense(128, activation='relu'),               # adds a fully connected layer with 128 neurons; takes data from convolutional layers to maker predictions
+    layers.Dense(128, activation='relu'),               # adds a fully connected layer with 128 neurons; takes data from convolutional layers to make predictions
     layers.Dropout(0.5),                                # randomly sets 50% of the input units to 0 at each update of training, helping with overfitting
     layers.Dense(num_classes, activation='softmax')     # a final dense layer based on the number of key signatures; each neuron is mapped to a unique key signature
 ])
