@@ -39,18 +39,22 @@ def process_data():
         ksig = row.ksig
         
         # generating .wav file from yt link
-        youtube_to_wav(yt_url)
+        if(youtube_to_wav(yt_url) == False):
+            print(f"Failed to generate spectrogram for {yt_url}\n")
+            index += 1
+            continue
         
         # generating spectrogram from .wav file and holding onto the path
         spg_path, sample_rate, width, height = wav_to_spectrogram(yt_url, abs_index)
         
         # check spg_path exists
         if(spg_path == None or os.path.exists(spg_path) == False):
-            print(f"Failed to generate spectrogram for {yt_url}")
+            print(f"Failed to generate spectrogram for {yt_url}\n")
+            index += 1
             continue
 
         # place information into music-data.csv if successful
-        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}', f'{width}', f'{height}']
+        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}', f'{width}', f'{height}', f'{yt_url}']
         
         processed_rows.append(index)
         index += 1
@@ -74,6 +78,7 @@ def process_data():
     md_df.to_csv(md_dir, index=False, header=True)
 
 # takes a youtube url and creates a .wav audio file in a temp directory
+# returns true when successful; false otherwise
 def youtube_to_wav(video_url, output_path=temp_wav_dir):
     try:
         # Download the audio using yt-dlp (output as .m4a or .webm)
@@ -87,6 +92,11 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir):
             print(f"Downloading audio from: {video_url}")
             ydl.download([video_url])
 
+        # Check to make sure temp audio is .webm (could be m4a file)
+        if(os.path.exists('downloaded_audio.m4a')):
+            os.remove("downloaded_audio.m4a")
+            return False
+
         # Load the downloaded audio with pydub (change extension based on what yt-dlp downloaded)
         audio = AudioSegment.from_file('downloaded_audio.webm')  # Adjust extension if needed
 
@@ -97,9 +107,11 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir):
 
         # Cleanup downloaded audio
         os.remove("downloaded_audio.webm")
+        return True
 
     except Exception as e:
         print(f"An error occurred: {e}")
+        return False
 
 
 # Load temp audio -> saves it to spectrograms data and returns path directory to spectrogram

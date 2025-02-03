@@ -1,2 +1,4 @@
 TO DO:
 Add more data
+Have a filtering process while training that filters out 'empty' data (often beginning/ending when there is no audio)
+    -> can do this while creating the chunks; just check overall pixel values are above a certain limit

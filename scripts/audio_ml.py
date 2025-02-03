@@ -53,7 +53,6 @@ music_data = pd.read_csv(music_data_dir)
 spectrogram_paths = music_data['spg_path'].values
 key_signatures = music_data['ksig'].values
 sample_rates = music_data['sample_rate'].values
-widths = music_data['width'].values
 heights = music_data['height'].values
 
 # Encode key signatures into numerical labels
@@ -64,11 +63,11 @@ frames_per_chunk = 0
     # Process all spectrograms into chunks
 X = []  # initial X npy array representing each chunk image
 y = []  # initial Y npy array representing key signatures for each chunk
-for spectrogram_path, key_label, sample_rate, width, height in zip(spectrogram_paths, key_labels, sample_rates, widths, heights):
-    chunks, chunk_width = load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=sample_rate)  # 3-second chunks
+for spectrogram_path, key_label, sample_rate, height in zip(spectrogram_paths, key_labels, sample_rates, heights):
+    chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=sample_rate)  # 3-second chunks
+
     X.extend(chunks)
     y.extend([key_label] * len(chunks)) # placing key signatures FOR EACH chunk
-    frames_per_chunk = chunk_width
 
 # Convert to numpy arrays
 X = np.array(X)

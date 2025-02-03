@@ -1,6 +1,18 @@
-spg_path,ksig,sample_rate,width,height
-data/dataset/spectrograms/sp_0.png,amajor,48000,3000,1200
-data/dataset/spectrograms/sp_1.png,fminor,48000,3000,1200
-data/dataset/spectrograms/sp_2.png,dmajor,48000,3000,1200
-data/dataset/spectrograms/sp_3.png,dmajor,48000,3000,1200
-data/dataset/spectrograms/sp_4.png,cmajor,48000,3000,1200
+spg_path,ksig,sample_rate,width,height, URL
+data/dataset/spectrograms/sp_0.png,amajor,48000,3000,1200,https://www.youtube.com/watch?v=GKdl-GCsNJ0
+data/dataset/spectrograms/sp_1.png,fminor,48000,3000,1200,https://www.youtube.com/watch?v=2g5xkLqIElU
+data/dataset/spectrograms/sp_2.png,dmajor,48000,3000,1200,https://www.youtube.com/watch?v=6jSLH9CDPPQ
+data/dataset/spectrograms/sp_3.png,dmajor,48000,3000,1200,https://www.youtube.com/watch?v=MqazV4hbu8E
+data/dataset/spectrograms/sp_4.png,cmajor,48000,3000,1200,https://www.youtube.com/watch?v=iOs9Osz3UFQ
+data/dataset/spectrograms/sp_5.png,c#major,48000,3000,1200,https://www.youtube.com/watch?v=a1E26wwblwA
+data/dataset/spectrograms/sp_6.png,gmajor,48000,3000,1200,https://www.youtube.com/watch?v=7hkw4rw3ong
+data/dataset/spectrograms/sp_7.png,d#minor,48000,3000,1200,https://www.youtube.com/watch?v=5oSd5g-QlOw
+data/dataset/spectrograms/sp_8.png,gmajor,48000,3000,1200,https://www.youtube.com/watch?v=S-Xm7s9eGxU
+data/dataset/spectrograms/sp_9.png,fminor,48000,3000,1200,https://www.youtube.com/watch?v=11Wi4KQQzkc
+data/dataset/spectrograms/sp_10.png,g#major,48000,3000,1200,https://www.youtube.com/watch?v=Li9E7y4zVIg
+data/dataset/spectrograms/sp_11.png,cmajor,48000,3000,1200,https://www.youtube.com/watch?v=fSLnffmDbME
+data/dataset/spectrograms/sp_12.png,fmajor,48000,3000,1200,https://www.youtube.com/watch?v=sElE_BfQ67s
+data/dataset/spectrograms/sp_13.png,a#major,48000,3000,1200,https://www.youtube.com/watch?v=VMFJwSR1MQQ
+data/dataset/spectrograms/sp_14.png,emajor,48000,3000,1200,https://www.youtube.com/watch?v=kVxqaMQhLaU
+data/dataset/spectrograms/sp_15.png,f#major,48000,3000,1200,https://www.youtube.com/watch?v=DlIUTj1eAQs
+data/dataset/spectrograms/sp_16.png,fmajor,48000,3000,1200,https://www.youtube.com/watch?v=9wxrB41PMhw
