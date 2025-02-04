@@ -16,7 +16,7 @@ models_dir = "models/"                                  # path to save model
 CHUNK_SIZE = 3      # chunk size (in seconds)
 BATCH_SIZE = 30     # batch size -> # of samples tested before updating gradient (smaller the number the more processing power but potentially better results)
 NUM_EPOCHS = 5      # number of times we iterate through the entire set of test samples
-IMG_SCALE = 1       # multiplied by img_size of chunks -> 0.5 halves the chunk image size
+IMG_SCALE = 1       # multiplied by img_size of chunks -> 0.5 halves the chunk image size; when IMG_SCALE = 1 the chunk maintains all data
 
 
 # Defining functions for splitting the spectrograms into small chunks for training
@@ -45,10 +45,10 @@ def load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=48000,
     # split the spectrogram into chunks
     chunks, frames_per_chunk = split_spectrogram(spectrogram, chunk_size, sr, hop_length)
 
-    # setting image size
+    # setting image size; when IMG_SCALE = 1 the chunk maintains all data
     img_size = (int(frames_per_chunk * IMG_SCALE), int(height * IMG_SCALE))
 
-    # halves each chunk size -> if computation is too high we can resize
+    # resizes based on img_size (IMG_SCALE)
     resized_chunks = [cv2.resize(chunk, img_size) for chunk in chunks]
 
     # return chunks
@@ -131,13 +131,15 @@ model = models.Sequential([
     layers.Dense(num_classes, activation='softmax')     # a final dense layer based on the number of key signatures; each neuron is mapped to a unique key signature
 ])
 
+# compiles and configures the model for training
 model.compile(optimizer='adam',                             # adam = converges faster than traditional optimizers like Stochastic Gradient Descent
               loss='sparse_categorical_crossentropy',       # loss = 'cost' we want to minimize
               metrics=['accuracy'])                         # accuracy = trains based on percentage of predictions matching true labels
 
-history = model.fit(X_train, y_train, epochs=NUM_EPOCHS,            # X_train / y_train: input -> correct output of training data; epochs = # of times we iterate over entire dataset
+# trains the model for a fixed number of dataset iterations / epochs
+history = model.fit(X_train, y_train, epochs=NUM_EPOCHS,    # X_train / y_train: input -> correct output of training data; epochs = # of times we iterate over entire dataset
                     validation_data=(X_val, y_val),         # validation data: the x and y val data to evaluate loss after each epoch
-                    batch_size=BATCH_SIZE)                      # batch size: number of samples tested before a gradient update
+                    batch_size=BATCH_SIZE)                  # batch size: number of samples tested before a gradient update
 
 
     # Evaluating and saving model
