@@ -12,9 +12,12 @@ import cv2
 music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
 models_dir = "models/"                                  # path to save model
 
-# relevant values
-c_size = 3      # chunk size (in seconds)
-b_size = 30     # batch size -> # of samples tested before updating gradient (smaller the number the more processing power but potentially better results)
+# relevant values to be messed with in training
+CHUNK_SIZE = 3      # chunk size (in seconds)
+BATCH_SIZE = 30     # batch size -> # of samples tested before updating gradient (smaller the number the more processing power but potentially better results)
+NUM_EPOCHS = 5      # number of times we iterate through the entire set of test samples
+IMG_SCALE = 1       # multiplied by img_size of chunks -> 0.5 halves the chunk image size
+
 
 # Defining functions for splitting the spectrograms into small chunks for training
 # spectrogram = path to spectrogram png
@@ -27,7 +30,7 @@ def split_spectrogram(spectrogram, chunk_size=3, sr=48000, hop_length=512):
     num_chunks = spectrogram.shape[1] // frames_per_chunk
 
     # Split the spectrogram into chunks
-    chunks = [spectrogram[:, i * frames_per_chunk:(i + 1) * frames_per_chunk] for i in range(num_chunks)]
+    chunks = [spectrogram[:, i * frames_per_chunk : (i + 1) * frames_per_chunk] for i in range(num_chunks)]
     return chunks, frames_per_chunk
 
 
@@ -43,13 +46,13 @@ def load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=48000,
     chunks, frames_per_chunk = split_spectrogram(spectrogram, chunk_size, sr, hop_length)
 
     # setting image size
-    img_size = (frames_per_chunk, height)
+    img_size = (int(frames_per_chunk * IMG_SCALE), int(height * IMG_SCALE))
 
-    # resize each chunk to the desired size
+    # halves each chunk size -> if computation is too high we can resize
     resized_chunks = [cv2.resize(chunk, img_size) for chunk in chunks]
 
     # return chunks
-    return resized_chunks, frames_per_chunk
+    return chunks, frames_per_chunk
 
 
     # Load CSV file data and encode key signatures
@@ -68,7 +71,7 @@ frames_per_chunk = 0
 X = []  # initial X npy array representing each chunk image
 y = []  # initial Y npy array representing key signatures for each chunk
 for spectrogram_path, key_label, sample_rate, height in zip(spectrogram_paths, key_labels, sample_rates, heights):
-    chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=c_size, sr=sample_rate)
+    chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=CHUNK_SIZE, sr=sample_rate)
 
     X.extend(chunks)
     y.extend([key_label] * len(chunks)) # placing key signatures FOR EACH chunk
@@ -132,9 +135,9 @@ model.compile(optimizer='adam',                             # adam = converges f
               loss='sparse_categorical_crossentropy',       # loss = 'cost' we want to minimize
               metrics=['accuracy'])                         # accuracy = trains based on percentage of predictions matching true labels
 
-history = model.fit(X_train, y_train, epochs=20,            # X_train / y_train: input -> correct output of training data; epochs = # of times we iterate over entire dataset
+history = model.fit(X_train, y_train, epochs=NUM_EPOCHS,            # X_train / y_train: input -> correct output of training data; epochs = # of times we iterate over entire dataset
                     validation_data=(X_val, y_val),         # validation data: the x and y val data to evaluate loss after each epoch
-                    batch_size=b_size)                      # batch size: number of samples tested before a gradient update
+                    batch_size=BATCH_SIZE)                      # batch size: number of samples tested before a gradient update
 
 
     # Evaluating and saving model
@@ -142,4 +145,4 @@ test_loss, test_acc = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_acc:.4f}")
 
 # Save the model
-model.save(f'{models_dir}key_signature_model.keras')
+model.save(f'{models_dir}key_signature_model_v0.keras')
