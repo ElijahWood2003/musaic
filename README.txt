@@ -1,14 +1,16 @@
 ---Written by Elijah Wood in 2025---
 Musical Key-Signature Auto-Detector ML Model
 
+Goal: Create a ML Model capable of continuous audio input key-signature detection.
 Current model is being saved in git LFS.
 Open in a Docker devcontainer for dependencies.
+
 
     Creating the Dataset
 To create a large dataset with minimal manual labor, I have created a script which takes in a list of text in the format:
 
-[YouTube-music URL], [key-signature] \ENTER
-[YouTube-music URL], [key-signature] \ENTER
+[YouTube-music URL],[key-signature] \ENTER
+[YouTube-music URL],[key-signature] \ENTER
 ...
 Through a series of subscripts, the script outputs this simple input into clean data.
 
