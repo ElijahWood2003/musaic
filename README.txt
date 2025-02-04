@@ -14,17 +14,16 @@ To create a large dataset with minimal manual labor, I have created a script whi
 ...
 Through a series of subscripts, the script outputs this simple input into clean data.
 
-Data Script Output (data_process, data_script):
+Data Script Output (data_process.py, data_script.py):
 1. Downloads and converts the Youtube video into a .wav audio file
 2. Stores the .wav audio file in a local temp directory
 3. Converts the .wav file into a spectrogram
 4. Stores the spectrogram in a data directory
 5. Adds the local path of the spectrogram to a .csv file along with the key-signature
 6. Cleans up all temporary audio/files created
-7. audio_ml: CNN model to train off of our dataset
 
 
-    Steps to Build the Model
+    Steps to Build the Model (audio_ml.py)
 1. Preprocess the Data:
     Load the CSV file containing spectrogram paths and key signatures.
     Convert key-signatures into numerical labels
