@@ -52,6 +52,7 @@ Data Script Output (data_process, data_script):
 
 7. Save and Deploy the Model:
     Save the trained model for future use.
+    Saved in /models as a .keras file which is tracked by git-lfs
 
 
 References:
