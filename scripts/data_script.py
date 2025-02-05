@@ -208,7 +208,7 @@ def reprocess_data():
         # iterating through lists; 
         # placing url / ksig in unprocessed data AND removing spectrogram AND dropping row of music data
         for spectrogram_path, key_signature, url, i in zip(spectrogram_paths, key_signatures, urls, range(len(md_df))):
-            ud_df.iloc(len(ud_db)) = [f'{url}', f'{key_signature}']
+            ud_df.loc[len(ud_df)] = [f'{url}', f'{key_signature}']
             os.remove(spectrogram_path)
             md_df = md_df.drop(index=i)
         

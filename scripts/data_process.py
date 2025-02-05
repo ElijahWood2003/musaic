@@ -2,9 +2,8 @@
 import data_script
 
 # proccess data
-data_script.process_data()
+# data_script.process_data()
 
 
-# reprocesses data (FROM music-data.csv)
-# TAKES ALL URLS/KEY-SIGS FROM MUSIC-DATA, DELETES SPECTROGRAMS AND REPROCESSES (EXPENSIVE)
-def reprocess_data():
+# reprocess data (ONLY USE WHEN YOU WANT TO ENTIRELY REDOWNLOAD DATA LIBRARY)
+data_script.reprocess_data()
