@@ -219,6 +219,8 @@ def reprocess_data():
         # running process_data
         process_data()
 
+    else:
+        print("Reprocess data canceled.\n")
 
 
         ## ESTIMATING KEY SIGNATURE WITH ESSENTIA (~80% ACCURATE)
