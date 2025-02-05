@@ -18,16 +18,13 @@ music_data_dir = "data/dataset/music-data.csv"          # path to music-data.csv
 temp_wav_dir = "data/temp_data/temp.wav"                # path for temp wav file
 spectrogram_dir = "data/dataset/spectrograms"           # path for spectrograms
 
+
 # combines all scripts below to take unprocessed-data.csv -> music-data.csv with paths to spectrograms and ksig
 # empties unprocessed-data.csv; skips and marks any URLs that fail
 def process_data():
-    # locations in directory
-    ud_dir = unprocessed_data_dir
-    md_dir = music_data_dir
-    
     # get unprocessed data df
-    ud_df = pd.read_csv(ud_dir)
-    md_df = pd.read_csv(md_dir)
+    ud_df = pd.read_csv(unprocessed_data_dir)
+    md_df = pd.read_csv(music_data_dir)
     processed_rows = []    # indexes of processed rows in the csv file to drop later
     index = 0              # tracking indices of unprocessed-data to know which we processed
     abs_index = len(md_df)     # tracking absolute index of music-data for naming spectrograms
@@ -37,15 +34,17 @@ def process_data():
         # yt / ksig values from the row of df
         yt_url = row.URL
         ksig = row.ksig
-        
+        video_title = ""
+
         # generating .wav file from yt link
-        if(youtube_to_wav(yt_url) == False):
+        video_title = youtube_to_wav(yt_url)
+        if(video_title == None):
             print(f"Failed to generate spectrogram for {yt_url}\n")
             index += 1
             continue
         
         # generating spectrogram from .wav file and holding onto the path
-        spg_path, sample_rate, width, height = wav_to_spectrogram(yt_url, abs_index)
+        spg_path, sample_rate, width, height = wav_to_spectrogram(abs_index)
         
         # check spg_path exists
         if(spg_path == None or os.path.exists(spg_path) == False):
@@ -54,7 +53,7 @@ def process_data():
             continue
 
         # place information into music-data.csv if successful
-        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}', f'{width}', f'{height}', f'{yt_url}']
+        md_df.loc[len(md_df)] = [f'{spg_path}',f'{ksig}', f'{sample_rate}', f'{width}', f'{height}', f'{yt_url}', f'{video_title}']
         
         processed_rows.append(index)
         index += 1
@@ -74,13 +73,15 @@ def process_data():
         if(inp == "Y" or inp == "y"):
             ud_df = ud_df.iloc[0:0]
         
-    ud_df.to_csv(ud_dir, index=False, header=True)
-    md_df.to_csv(md_dir, index=False, header=True)
+    ud_df.to_csv(unprocessed_data_dir, index=False, header=True)
+    md_df.to_csv(music_data_dir, index=False, header=True)
 
 # takes a youtube url and creates a .wav audio file in a temp directory
-# returns true when successful; false otherwise
-def youtube_to_wav(video_url, output_path=temp_wav_dir):
+# returns title of video when successful; None otherwise
+def youtube_to_wav(video_url, output_path=temp_wav_dir) -> str:
     try:
+        video_title = ""
+
         # Download the audio using yt-dlp (output as .m4a or .webm)
         ydl_opts = {
             'format': 'bestaudio/best',
@@ -90,6 +91,7 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir):
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             print(f"Downloading audio from: {video_url}")
+            video_title = ydl.extract_info(video_url, download=False).get('title', None)
             ydl.download([video_url])
 
         # Check to make sure temp audio is .webm (could be m4a file)
@@ -107,17 +109,17 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir):
 
         # Cleanup downloaded audio
         os.remove("downloaded_audio.webm")
-        return True
+        return video_title
 
     except Exception as e:
         print(f"An error occurred: {e}")
-        return False
+        return None
 
 
 # Load temp audio -> saves it to spectrograms data and returns path directory to spectrogram
 # file_name = path to .wav file
 # index = index value to name spg in directory
-def wav_to_spectrogram(file_name, index):
+def wav_to_spectrogram(index):
     # audio path for temp wav file
     audio_path = temp_wav_dir
 
@@ -145,7 +147,7 @@ def wav_to_spectrogram(file_name, index):
         
             # defines the number of samples between successive windows
             # reducing it increases resolution but also increases computation cost
-            # generally 1/4 x n_fft
+            # generally hop_length = 1/4 * n_fft
         hop_length=256
     )
 
@@ -188,14 +190,35 @@ def wav_to_spectrogram(file_name, index):
     return output_str, sample_rate, width, height
 
 
-# # Plot the Mel spectrogram
-# plt.figure(figsize=(10, 6))
-# plt.imshow(log_mel_spectrogram[0].numpy(), aspect='auto', origin='lower', cmap='inferno')
-# plt.title('Mel Spectrogram')
-# plt.ylabel('Mel bins')
-# plt.xlabel('Time')
-# plt.colorbar(format="%+2.0f dB")
-# plt.show()
+# reprocesses data (FROM music-data.csv)
+# TAKES ALL URLS/KEY-SIGS FROM MUSIC-DATA, DELETES SPECTROGRAMS AND REPROCESSES (EXPENSIVE)
+def reprocess_data():
+    # double checking user understands and wants to proceed
+    inp = input(f"ARE YOU SURE YOU WOULD LIKE TO REPROCESS ALL DATA? THIS WILL DELETE ALL SPECTROGRAMS IN DATA AND REPROCESS THEM (y/n) ")
+    if(inp == "Y" or inp == "y"):
+        # df we want access to
+        md_df = pd.read_csv(music_data_dir)
+        ud_df = pd.read_csv(unprocessed_data_dir)
+
+        # getting values from music data
+        spectrogram_paths = md_df['spg_path'].values
+        key_signatures = md_df['ksig'].values
+        urls = md_df['URL'].values
+
+        # iterating through lists; 
+        # placing url / ksig in unprocessed data AND removing spectrogram AND dropping row of music data
+        for spectrogram_path, key_signature, url, i in zip(spectrogram_paths, key_signatures, urls, range(len(md_df))):
+            ud_df.iloc(len(ud_db)) = [f'{url}', f'{key_signature}']
+            os.remove(spectrogram_path)
+            md_df = md_df.drop(index=i)
+        
+        # placing new df's into respective .csv files
+        ud_df.to_csv(unprocessed_data_dir, index=False, header=True)
+        md_df.to_csv(music_data_dir, index=False, header=True)
+
+        # running process_data
+        process_data()
+
 
 
         ## ESTIMATING KEY SIGNATURE WITH ESSENTIA (~80% ACCURATE)
