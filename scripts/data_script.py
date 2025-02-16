@@ -223,6 +223,46 @@ def reprocess_data():
         print("Reprocess data canceled.\n")
 
 
+# parse dataset to output information about it
+def print_data_info():
+    df = pd.read_csv(music_data_dir)
+
+    # a dict representing the number of each key sig in the dataset
+    ksig_dict = {
+        "cmajor": 0,
+        "c#major": 0,
+        "dmajor": 0,
+        "d#major": 0,
+        "emajor": 0,
+        "fmajor": 0,
+        "f#major": 0,
+        "gmajor": 0,
+        "g#major": 0,
+        "amajor": 0,
+        "a#major": 0,
+        "bmajor": 0,
+        "cminor": 0,
+        "c#minor": 0,
+        "dminor": 0,
+        "d#minor": 0,
+        "eminor": 0,
+        "fminor": 0,
+        "f#minor": 0,
+        "gminor": 0,
+        "g#minor": 0,
+        "aminor": 0,
+        "a#minor": 0,
+        "bminor": 0
+    }
+
+    ksig = df['ksig'].values
+
+    for key in ksig:
+        ksig_dict[key] += 1
+
+    # print out information in dict
+    print(ksig_dict)
+
         ## ESTIMATING KEY SIGNATURE WITH ESSENTIA (~80% ACCURATE)
 # import librosa
 # from essentia.standard import KeyExtractor
