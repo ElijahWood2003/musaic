@@ -15,7 +15,7 @@ models_dir = "models/"                                  # path to save model
 # relevant values to be messed with in training
 CHUNK_SIZE = 3      # chunk size (in seconds)
 BATCH_SIZE = 30     # batch size -> # of samples tested before updating gradient (smaller the number the more processing power but potentially better results)
-NUM_EPOCHS = 5      # number of times we iterate through the entire set of test samples
+NUM_EPOCHS = 10      # number of times we iterate through the entire set of test samples
 IMG_SCALE = 1       # multiplied by img_size of chunks -> 0.5 halves the chunk image size; when IMG_SCALE = 1 the chunk maintains all data
 
 
@@ -36,7 +36,7 @@ def split_spectrogram(spectrogram, chunk_size=3, sr=48000, hop_length=512):
 
 # loads spectrograms and splits them into smaller chunks; returns a list of these normalized chunks
 def load_and_split_spectrogram(spectrogram_path, height, chunk_size=3, sr=48000, hop_length=512):
-    # load spectrogram image as a grayscale image (cv2.imread is used read .png and do this)
+    # load spectrogram image as a grayscale image
     spectrogram = cv2.imread(spectrogram_path, cv2.IMREAD_GRAYSCALE)
     
     # normalize the spectrogram from [0, 255] -> [0, 1]
@@ -73,6 +73,7 @@ y = []  # initial Y npy array representing key signatures for each chunk
 for spectrogram_path, key_label, sample_rate, height in zip(spectrogram_paths, key_labels, sample_rates, heights):
     chunks, frames_per_chunk = load_and_split_spectrogram(spectrogram_path, height, chunk_size=CHUNK_SIZE, sr=sample_rate)
 
+    # adding x and y data based on chunks
     X.extend(chunks)
     y.extend([key_label] * len(chunks)) # placing key signatures FOR EACH chunk
 

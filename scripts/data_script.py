@@ -22,9 +22,10 @@ spectrogram_dir = "data/dataset/spectrograms"           # path for spectrograms
 # combines all scripts below to take unprocessed-data.csv -> music-data.csv with paths to spectrograms and ksig
 # empties unprocessed-data.csv; skips and marks any URLs that fail
 def process_data():
-    # get unprocessed data df
+    # get data frames
     ud_df = pd.read_csv(unprocessed_data_dir)
     md_df = pd.read_csv(music_data_dir)
+
     processed_rows = []    # indexes of processed rows in the csv file to drop later
     index = 0              # tracking indices of unprocessed-data to know which we processed
     abs_index = len(md_df)     # tracking absolute index of music-data for naming spectrograms
@@ -72,7 +73,8 @@ def process_data():
         inp = input(f"There is {unprocessed} unprocessed data. Would you like to delete? (y/n) ")
         if(inp == "Y" or inp == "y"):
             ud_df = ud_df.iloc[0:0]
-        
+    
+    # saving our data frames to csv files
     ud_df.to_csv(unprocessed_data_dir, index=False, header=True)
     md_df.to_csv(music_data_dir, index=False, header=True)
 
@@ -111,6 +113,7 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir) -> str:
         os.remove("downloaded_audio.webm")
         return video_title
 
+    # any error we encounter along the way just return None
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
