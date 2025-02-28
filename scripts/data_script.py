@@ -80,7 +80,7 @@ def process_data():
 
 # takes a youtube url and creates a .wav audio file in a temp directory
 # returns title of video when successful; None otherwise
-def youtube_to_wav(video_url, output_path=temp_wav_dir) -> str:
+def youtube_to_wav(video_url, output_path=temp_wav_dir) -> str | None:
     try:
         video_title = ""
 
@@ -99,7 +99,7 @@ def youtube_to_wav(video_url, output_path=temp_wav_dir) -> str:
         # Check to make sure temp audio is .webm (could be m4a file)
         if(os.path.exists('downloaded_audio.m4a')):
             os.remove("downloaded_audio.m4a")
-            return False
+            return None
 
         # Load the downloaded audio with pydub (change extension based on what yt-dlp downloaded)
         audio = AudioSegment.from_file('downloaded_audio.webm')  # Adjust extension if needed
