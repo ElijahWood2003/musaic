@@ -1,4 +1,6 @@
 ---Written by Elijah Wood in 2025---
+Co-Author: Ivan Fuentes
+
 Musical Key-Signature Auto-Detector ML Model
 
 Goal: Create a ML Model capable of continuous audio input key-signature detection.
